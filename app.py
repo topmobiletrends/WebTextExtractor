@@ -4,6 +4,12 @@ from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
+# Root route to handle the homepage
+@app.route('/')
+def home():
+    return "Welcome to the Web Text Extractor!"
+
+# Route to handle text extraction
 @app.route('/extract-text', methods=['POST'])
 def extract_text():
     url = request.json.get('url')
