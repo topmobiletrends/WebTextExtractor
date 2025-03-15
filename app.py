@@ -1,13 +1,13 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import requests
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
-# Root route to handle the homepage
+# Serve the frontend (index.html) at the root route
 @app.route('/')
 def home():
-    return "Welcome to the Web Text Extractor!"
+    return render_template('index.html')
 
 # Route to handle text extraction
 @app.route('/extract-text', methods=['POST'])
