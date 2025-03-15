@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template
-import requests
-from bs4 import BeautifulSoup
+from newspaper import Article
+import re
 
 app = Flask(__name__)
 
@@ -17,13 +17,19 @@ def extract_text():
         return jsonify({"error": "URL is required"}), 400
 
     try:
-        # Fetch the webpage content
-        response = requests.get(url)
-        response.raise_for_status()
+        # Create an Article object
+        article = Article(url)
 
-        # Parse the HTML and extract text
-        soup = BeautifulSoup(response.text, 'html.parser')
-        text = soup.get_text(separator='\n')  # Clean text with line breaks
+        # Download and parse the article
+        article.download()
+        article.parse()
+
+        # Extract the main article text
+        text = article.text
+
+        # Clean up the text (remove extra spaces and unwanted lines)
+        text = re.sub(r'\n\s*\n', '\n', text)  # Remove extra newlines
+        text = text.strip()  # Remove leading/trailing spaces
 
         return jsonify({"text": text})
     except Exception as e:
